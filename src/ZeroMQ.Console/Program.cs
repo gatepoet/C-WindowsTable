@@ -19,11 +19,12 @@ namespace ZeroMQ.Server
             using (NetMQContext context = NetMQContext.Create())
             {
                 Task serverTask = Task.Factory.StartNew(() => Server(context));
-                Task.WaitAll(serverTask);
+                Task publisherTask = Task.Factory.StartNew(() => Publisher(context));
+                Task.WaitAll(serverTask, publisherTask);
             }
         }
 
-        static void Server(NetMQContext context)
+        static void Publisher(NetMQContext context)
         {
             int messageCount = 0;
             var sw = new Stopwatch();
@@ -34,31 +35,49 @@ namespace ZeroMQ.Server
 
                 while (true)
                 {
-					//string message = serverSocket.ReceiveString();
-                    
-					serverSocket.Send("i'm here");
+                    //string message = serverSocket.ReceiveString();
 
-					Thread.Sleep(100);
+                    serverSocket.Send("127.0.0.1:5557");
+
+                    Thread.Sleep(100);
 
 
-					//var split = message.Split(' ');
-					//var name = split[0];
-					//var address = split[1];
+                    //var split = message.Split(' ');
+                    //var name = split[0];
+                    //var address = split[1];
 
-					//Console.WriteLine("{0} {1}", name, address);
+                    //Console.WriteLine("{0} {1}", name, address);
 
-					messageCount++;
+                    messageCount++;
 
-					System.Console.Clear();
-					
-					System.Console.WriteLine("Message count : {0}", messageCount);                    
+                    System.Console.Clear();
 
-					//serverSocket.Send("World");
+                    System.Console.WriteLine("Message count : {0}", messageCount);
 
-					//if (message == "exit")
-					//{
-					//	break;
-					//}
+                    //serverSocket.Send("World");
+
+                    //if (message == "exit")
+                    //{
+                    //	break;
+                    //}
+                }
+            }
+        }
+        static void Server(NetMQContext context)
+        {
+            int messageCount = 0;
+            var sw = new Stopwatch();
+            using (var serverSocket = context.CreateResponseSocket())
+            {
+                sw.Start();
+                serverSocket.Bind("tcp://*:5557");
+
+                while (true)
+                {
+                    string message = serverSocket.ReceiveString();
+                    Console.WriteLine(message);
+                    Console.WriteLine("I was found. Exiting...");
+                    Environment.Exit(0);
                 }
             }
         }
