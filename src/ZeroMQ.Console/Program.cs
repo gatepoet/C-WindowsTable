@@ -16,15 +16,21 @@ namespace ZeroMQ.Server
 
         static void Main(string[] args)
         {
+			if(args.Length == 0) {
+				throw new ArgumentException("missing ipaddress parameter");
+			}
+
             using (NetMQContext context = NetMQContext.Create())
             {
-                Task serverTask = Task.Factory.StartNew(() => Server(context));
-                Task publisherTask = Task.Factory.StartNew(() => Publisher(context));
+                Task serverTask = Task.Factory.StartNew(() => Server(context,args[0]));
+                Task publisherTask = Task.Factory.StartNew(() => Server(context));
                 Task.WaitAll(serverTask, publisherTask);
             }
         }
 
-        static void Publisher(NetMQContext context)
+		const int ResponsePort = 5557;
+
+        static void Server(NetMQContext context, string ipaddress)
         {
             int messageCount = 0;
             var sw = new Stopwatch();
@@ -35,6 +41,9 @@ namespace ZeroMQ.Server
 
                 while (true)
                 {
+					//string message = serverSocket.ReceiveString();
+                    
+					serverSocket.Send(string.Format("{0}:{1}", ipaddress,ResponsePort));
                     //string message = serverSocket.ReceiveString();
 
                     serverSocket.Send("127.0.0.1:5557");
