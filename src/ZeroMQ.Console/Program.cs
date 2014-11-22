@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NetMQ;
 
-namespace ZeroMQ.Console
+namespace ZeroMQ.Server
 {
     class Program
     {
@@ -27,27 +27,38 @@ namespace ZeroMQ.Console
         {
             int messageCount = 0;
             var sw = new Stopwatch();
-            using (NetMQSocket serverSocket = context.CreateResponseSocket())
+            using (var serverSocket = context.CreatePublisherSocket())
             {
                 sw.Start();
                 serverSocket.Bind("tcp://*:5556");
 
                 while (true)
                 {
-                    string message = serverSocket.ReceiveString();
+					//string message = serverSocket.ReceiveString();
                     
-                    messageCount++;
+					serverSocket.Send("i'm here");
 
-                    System.Console.Clear();
-                    System.Console.WriteLine("Latest message {0}", message);
-                    System.Console.WriteLine("Message count : {0}", messageCount);                    
+					Thread.Sleep(100);
 
-                    serverSocket.Send("World");
 
-                    if (message == "exit")
-                    {
-                        break;
-                    }
+					//var split = message.Split(' ');
+					//var name = split[0];
+					//var address = split[1];
+
+					//Console.WriteLine("{0} {1}", name, address);
+
+					messageCount++;
+
+					System.Console.Clear();
+					
+					System.Console.WriteLine("Message count : {0}", messageCount);                    
+
+					//serverSocket.Send("World");
+
+					//if (message == "exit")
+					//{
+					//	break;
+					//}
                 }
             }
         }
