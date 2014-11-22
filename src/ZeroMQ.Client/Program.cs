@@ -10,31 +10,36 @@ namespace ZeroMQ.Client
         {
             using (NetMQContext context = NetMQContext.Create())
             {
-                Task clientTask = Task.Factory.StartNew(() => Client(context));
-                Task.WaitAll(clientTask);
+                /* Task findTask = Task.Factory.StartNew(() => FindServers(context));
+                 Task.WaitAll(findTask);*/
+                FindServers(context);
             }
         }
 
 
-        static void Client(NetMQContext context)
+        static void FindServers(NetMQContext context)
         {
-            using (NetMQSocket replySocket = context.CreateResponseSocket())
-            using (NetMQSocket pubSocket = context.CreatePublisherSocket())
+            using (var subSocket = context.CreateSubscriberSocket())
             {
-                replySocket.Bind("tcp://*:5556");
-
-                for (int i = 0; i < 256; i++)
+                subSocket.Options.SendTimeout = TimeSpan.FromMilliseconds(200);
+                for (int i = 1; i < 6; i++)
                 {
-                    pubSocket.Connect(string.Format("tcp://192.168.1.{0}:5555", i));
+                    subSocket.Connect(string.Format("tcp://192.168.1.{0}:5556", i));
+                    subSocket.Subscribe("");
                 }
-                
-                
-                pubSocket.Send("John 192.168.1.4:5556");
 
-                while (true)
+                using (var foundSocket = context.CreateRequestSocket())
                 {
-                    var read = replySocket.ReceiveString();
-                    Console.WriteLine(read);
+                    while (true)
+                    {
+                        var read = subSocket.ReceiveString();
+
+                        Console.WriteLine(read);
+
+                        foundSocket.Connect(string.Format("tcp://{0}", read));
+                        foundSocket.Send(string.Format("I [John] found you [{0}].", read));
+                    }
+
                 }
             }
         }
