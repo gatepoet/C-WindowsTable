@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NetMQ;
-using System.Diagnostics;
 
 namespace ZeroMQ.Client
 {
@@ -22,30 +18,23 @@ namespace ZeroMQ.Client
 
         static void Client(NetMQContext context)
         {
-            using (NetMQSocket clientSocket = context.CreateRequestSocket())
+            using (NetMQSocket replySocket = context.CreateResponseSocket())
+            using (NetMQSocket pubSocket = context.CreatePublisherSocket())
             {
-                clientSocket.Connect("tcp://127.0.0.1:5555");
+                replySocket.Bind("tcp://*:5556");
 
-				var count = 0;
-
-				var stopwatch = new Stopwatch();
-				stopwatch.Start();
+                for (int i = 0; i < 256; i++)
+                {
+                    pubSocket.Connect(string.Format("tcp://192.168.1.{0}:5555", i));
+                }
+                
+                
+                pubSocket.Send("John 192.168.1.4:5556");
 
                 while (true)
                 {
-					//System.Console.WriteLine("Please enter your message:");
-					//string message = System.Console.ReadLine();
-                    clientSocket.Send("hello");
-
-					var read = clientSocket.ReceiveString();
-
-					//System.Console.WriteLine("Answer from server: {0}", answer);
-
-					count++;
-
-					if(count%100==0) {
-						Console.WriteLine("running at {0} msg/sec", count/stopwatch.Elapsed.TotalSeconds);
-					}
+                    var read = replySocket.ReceiveString();
+                    Console.WriteLine(read);
                 }
             }
         }
