@@ -1,0 +1,7 @@
+c:\users\jovanloon\documents\visual studio 2013\Projects\ZeroMQ\ZeroMQ.Console\bin\Debug\ZeroMQ.Console.exe.config
+c:\users\jovanloon\documents\visual studio 2013\Projects\ZeroMQ\ZeroMQ.Console\bin\Debug\ZeroMQ.Console.exe
+c:\users\jovanloon\documents\visual studio 2013\Projects\ZeroMQ\ZeroMQ.Console\bin\Debug\ZeroMQ.Console.pdb
+c:\users\jovanloon\documents\visual studio 2013\Projects\ZeroMQ\ZeroMQ.Console\bin\Debug\NetMQ.dll
+c:\users\jovanloon\documents\visual studio 2013\Projects\ZeroMQ\ZeroMQ.Console\obj\Debug\ZeroMQ.Console.csprojResolveAssemblyReference.cache
+c:\users\jovanloon\documents\visual studio 2013\Projects\ZeroMQ\ZeroMQ.Console\obj\Debug\ZeroMQ.Console.exe
+c:\users\jovanloon\documents\visual studio 2013\Projects\ZeroMQ\ZeroMQ.Console\obj\Debug\ZeroMQ.Console.pdb
