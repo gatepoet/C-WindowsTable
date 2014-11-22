@@ -1,14 +1,19 @@
-﻿using NetMQ;
+﻿using System;
+using NetMQ;
 
 namespace ZeroMQ.Server
 {
     internal class DealerServer
     {
+        private const int MinPort = 5500;
+        private const int MaxPort = 5600;
+
         public void Start(NetMQContext context)
         {
             using (var serverSocket = context.CreateDealerSocket())
             {
-                serverSocket.Bind("tcp://*:5556");
+                var port = new Random().Next(MinPort, MaxPort);
+                serverSocket.Bind("tcp://*:" + port);
                 serverSocket.Send("My Secret");
 
                 while (true)
