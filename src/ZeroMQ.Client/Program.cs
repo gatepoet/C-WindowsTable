@@ -10,37 +10,37 @@ namespace ZeroMQ.Client
         {
             using (NetMQContext context = NetMQContext.Create())
             {
-                Task listenTask = Task.Factory.StartNew(() => ListenToReplies(context));
-                Task broadcastTask = Task.Factory.StartNew(() => BroadcastAddress(context));
-                Task.WaitAll(listenTask, broadcastTask);
+                /* Task findTask = Task.Factory.StartNew(() => FindServers(context));
+                 Task.WaitAll(findTask);*/
+                FindServers(context);
             }
         }
 
 
-        static void ListenToReplies(NetMQContext context)
+        static void FindServers(NetMQContext context)
         {
-            using (NetMQSocket replySocket = context.CreateResponseSocket())
+            using (var subSocket = context.CreateSubscriberSocket())
             {
-                replySocket.Bind("tcp://*:5556");
-
-                while (true)
+                subSocket.Options.SendTimeout = TimeSpan.FromMilliseconds(200);
+                for (int i = 1; i < 6; i++)
                 {
-                    var read = replySocket.ReceiveString();
-                    Console.WriteLine(read);
-                }
-            }
-        }
-
-        static void BroadcastAddress(NetMQContext context)
-        {
-            using (NetMQSocket pubSocket = context.CreatePublisherSocket())
-            {
-                for (int i = 1; i < 255; i++)
-                {
-                    pubSocket.Connect(string.Format("tcp://192.168.1.{0}:5555", i));
+                    subSocket.Connect(string.Format("tcp://192.168.1.{0}:5556", i));
+                    subSocket.Subscribe("");
                 }
 
-                pubSocket.Send("John 192.168.1.4:5556");
+                using (var foundSocket = context.CreateRequestSocket())
+                {
+                    while (true)
+                    {
+                        var read = subSocket.ReceiveString();
+
+                        Console.WriteLine(read);
+
+                        foundSocket.Connect(string.Format("tcp://{0}", read));
+                        foundSocket.Send(string.Format("I [John] found you [{0}].", read));
+                    }
+
+                }
             }
         }
     }
