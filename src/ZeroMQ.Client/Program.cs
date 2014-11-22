@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NetMQ;
+using System.Diagnostics;
 
 namespace ZeroMQ.Client
 {
@@ -25,20 +26,26 @@ namespace ZeroMQ.Client
             {
                 clientSocket.Connect("tcp://127.0.0.1:5555");
 
+				var count = 0;
+
+				var stopwatch = new Stopwatch();
+				stopwatch.Start();
+
                 while (true)
                 {
-                    System.Console.WriteLine("Please enter your message:");
-                    string message = System.Console.ReadLine();
-                    clientSocket.Send(message);
+					//System.Console.WriteLine("Please enter your message:");
+					//string message = System.Console.ReadLine();
+                    clientSocket.Send("hello");
 
-                    string answer = clientSocket.ReceiveString();
+					var read = clientSocket.ReceiveString();
 
-                    System.Console.WriteLine("Answer from server: {0}", answer);
+					//System.Console.WriteLine("Answer from server: {0}", answer);
 
-                    if (message == "exit")
-                    {
-                        break;
-                    }
+					count++;
+
+					if(count%100==0) {
+						Console.WriteLine("running at {0} msg/sec", count/stopwatch.Elapsed.TotalSeconds);
+					}
                 }
             }
         }
