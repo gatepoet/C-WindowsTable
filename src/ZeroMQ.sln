@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeroMQ.Console", "ZeroMQ.Console\ZeroMQ.Console.csproj", "{E1B5FAFC-5F64-40A1-A8F3-7FF67CA5A221}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeroMQ.Server", "ZeroMQ.Console\ZeroMQ.Server.csproj", "{E1B5FAFC-5F64-40A1-A8F3-7FF67CA5A221}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZeroMQ.Client", "ZeroMQ.Client\ZeroMQ.Client.csproj", "{B1323096-419C-4CD0-B5AB-96656ABEC475}"
 EndProject
